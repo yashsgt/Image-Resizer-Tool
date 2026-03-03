@@ -1,0 +1,274 @@
+<!-- Resize Width x Height wise -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Resizer Tool</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .container {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        width: 400px;
+        text-align: center;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    h2 {
+        margin-bottom: 20px;
+    }
+
+    input[type="file"] {
+        margin: 10px 0;
+    }
+
+    input[type="number"] {
+        width: 100px;
+        padding: 6px;
+        margin: 10px 5px;
+    }
+
+    button {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 6px;
+        background: #667eea;
+        color: white;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    button:hover {
+        background: #5563c1;
+    }
+
+    img {
+        max-width: 100%;
+        margin-top: 15px;
+        border-radius: 8px;
+    }
+
+    .download-btn {
+        background: #28a745;
+        display: none;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Image Resizer</h2>
+
+    <input type="file" id="upload" accept="image/*"><br>
+
+    <label>Enter Size (Width × Height):</label><br>
+    <input type="number" id="width" placeholder="Width (e.g 600)">
+    ×
+    <input type="number" id="height" placeholder="Height (e.g 420)"><br>
+
+    <button onclick="resizeImage()">Resize Image</button>
+
+    <canvas id="canvas" style="display:none;"></canvas>
+
+    <img id="preview">
+
+    <br>
+    <a id="downloadLink">
+        <button class="download-btn" id="downloadBtn">Download Image</button>
+    </a>
+</div>
+
+<script>
+let uploadedImage = new Image();
+
+document.getElementById("upload").addEventListener("change", function(event){
+    const reader = new FileReader();
+    reader.onload = function(){
+        uploadedImage.src = reader.result;
+        document.getElementById("preview").src = reader.result;
+    }
+    reader.readAsDataURL(event.target.files[0]);
+});
+
+function resizeImage(){
+    const width = document.getElementById("width").value;
+    const height = document.getElementById("height").value;
+
+    if(!width || !height){
+        alert("Please enter both width and height.");
+        return;
+    }
+
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = width;
+    canvas.height = height;
+
+    ctx.drawImage(uploadedImage, 0, 0, width, height);
+
+    const resizedImageURL = canvas.toDataURL("image/png");
+
+    document.getElementById("preview").src = resizedImageURL;
+
+    const downloadLink = document.getElementById("downloadLink");
+    downloadLink.href = resizedImageURL;
+    downloadLink.download = "resized-image.png";
+
+    document.getElementById("downloadBtn").style.display = "inline-block";
+}
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+<!-- Resize Percentage wise  -->
+ 
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Resizer Tool</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .container {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        width: 400px;
+        text-align: center;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    h2 {
+        margin-bottom: 20px;
+    }
+
+    input[type="file"] {
+        margin: 10px 0;
+    }
+
+    input[type="number"] {
+        width: 80px;
+        padding: 5px;
+        margin: 10px 0;
+    }
+
+    button {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 6px;
+        background: #667eea;
+        color: white;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    button:hover {
+        background: #5563c1;
+    }
+
+    img {
+        max-width: 100%;
+        margin-top: 15px;
+        border-radius: 8px;
+    }
+
+    .download-btn {
+        background: #28a745;
+        display: none;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Image Resizer</h2>
+
+    <input type="file" id="upload" accept="image/*"><br>
+
+    <label>Resize Percentage:</label><br>
+    <input type="number" id="resizePercent" value="50"> %<br>
+
+    <button onclick="resizeImage()">Resize Image</button>
+
+    <canvas id="canvas" style="display:none;"></canvas>
+
+    <img id="preview">
+
+    <br>
+    <a id="downloadLink">
+        <button class="download-btn" id="downloadBtn">Download Image</button>
+    </a>
+</div>
+
+<script>
+let uploadedImage = new Image();
+
+document.getElementById("upload").addEventListener("change", function(event){
+    const reader = new FileReader();
+    reader.onload = function(){
+        uploadedImage.src = reader.result;
+        document.getElementById("preview").src = reader.result;
+    }
+    reader.readAsDataURL(event.target.files[0]);
+});
+
+function resizeImage(){
+    const percent = document.getElementById("resizePercent").value;
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const newWidth = uploadedImage.width * percent / 100;
+    const newHeight = uploadedImage.height * percent / 100;
+
+    canvas.width = newWidth;
+    canvas.height = newHeight;
+
+    ctx.drawImage(uploadedImage, 0, 0, newWidth, newHeight);
+
+    const resizedImageURL = canvas.toDataURL("image/png");
+
+    document.getElementById("preview").src = resizedImageURL;
+
+    const downloadLink = document.getElementById("downloadLink");
+    downloadLink.href = resizedImageURL;
+    downloadLink.download = "resized-image.png";
+
+    document.getElementById("downloadBtn").style.display = "inline-block";
+}
+</script>
+
+</body>
+</html>  -->
